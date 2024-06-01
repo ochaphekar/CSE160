@@ -1,0 +1,84 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Asg4: Ojas Chaphekar</title>
+  </head>
+
+  <body onload="main()">
+    <canvas id="cnv1" width="700" height="700">
+    Please use a browser that supports "canvas"
+    </canvas>
+	
+	<br>
+	<!-- Create buttons to turn on and off normals -->
+	<div>
+	
+	<!-- Create buttons to turn on and off lighting -->
+	<div>
+    Light
+	<input type="button" id = "lighting_on" value="On">
+	<input type="button" id = "lighting_off" value="Off">	
+	</div>
+    
+    </div>
+    Normal:
+	<input type="button" id = "normals_on" value="On">
+	<input type="button" id = "normals_off" value="Off">	
+	</div>
+	
+	<!-- Create buttons to chose point or spot lighting -->
+	<div>
+	<input type="button" id = "point_light" value="Point Light">
+	<input type="button" id = "spot_light" value="Spot Light">	
+	</div>
+	
+	<!-- Create buttons to turn on and off lighting animation -->
+	<div>
+    Light
+	<input type="button" id = "animation_on" value="Moving">
+	<input type="button" id = "animation_off" value="Stationary">	
+	</div>
+	
+	<!-- Create sliders for choosing the light location -->
+	<div>
+	<label>Light Position: </label>
+	<label>X</label>
+	<input type="range" id="light_x" min="-250" max="250" value="0" class="slider">
+	<label>Y</label>
+	<input type="range" id="light_y" min="-250" max="250" value="100" class="slider">
+	<label>Z</label>
+	<input type="range" id="light_z" min="-250" max="250" value="-200" class="slider">
+	</div>
+	
+	<!-- Create sliders for choosing the light color -->
+	<div>
+	<label>Light Color: </label>
+	<label>Red</label>
+	<input type="range" id="light_r" min="0" max="255" value="255" class="slider">
+	<label>Green</label>
+	<input type="range" id="light_g" min="0" max="255" value="255" class="slider">
+	<label>Blue</label>
+	<input type="range" id="light_b" min="0" max="255" value="255" class="slider">
+	</div>
+	<p>
+        <label>Controls:</label>
+        <br>
+        <label>W, A, S, D: Up, Left, Down, Right</label>
+        <br>
+        <label>Q, E: Change Horizontal View</label>
+        <br>
+    </p>
+	
+    <script src="lib/webgl-utils.js"></script>
+    <script src="lib/webgl-debug.js"></script>
+    <script src="lib/cuon-utils.js"></script>
+    <script src="lib/cuon-matrix.js"></script>
+    <script src="asg4.js"></script>
+    <script src="Triangle.js"></script>
+    <script src="Cube.js"></script>
+    <script src="Sphere.js"></script>
+    <script src="Camera.js"></script>
+  </body>
+</html>
