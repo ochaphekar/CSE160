@@ -359,13 +359,15 @@ let g_point_light = true;
 let g_camera;
 
 function addActionsForHtmlUI(){
-	// normals on/off buttons
-	document.getElementById('normals_on').onclick = function(){g_normals_on = true; renderAllShapes();};
-	document.getElementById('normals_off').onclick = function(){g_normals_on = false; renderAllShapes();};
 	
 	// lighting on/off buttons
 	document.getElementById('lighting_on').onclick = function(){g_lighting_on = true; renderAllShapes();};
 	document.getElementById('lighting_off').onclick = function(){g_lighting_on = false; renderAllShapes();};
+
+	// light color sliders
+	document.getElementById("light_r").addEventListener('mousemove', function() {g_lightColor[0] = this.value/255.0; renderAllShapes();});
+	document.getElementById("light_g").addEventListener('mousemove', function() {g_lightColor[1] = this.value/255.0; renderAllShapes();});
+	document.getElementById("light_b").addEventListener('mousemove', function() {g_lightColor[2] = this.value/255.0; renderAllShapes();});
 	
 	// animations on/off buttons
 	document.getElementById('animation_on').onclick = function(){g_animation = true; renderAllShapes();};
@@ -379,11 +381,11 @@ function addActionsForHtmlUI(){
 	document.getElementById("light_x").addEventListener('mousemove', function() {g_lightPos[0] = this.value/100; renderAllShapes();});
 	document.getElementById("light_y").addEventListener('mousemove', function() {g_lightPos[1] = this.value/100; renderAllShapes();});
 	document.getElementById("light_z").addEventListener('mousemove', function() {g_lightPos[2] = this.value/100; renderAllShapes();});
-	
-	// light color sliders
-	document.getElementById("light_r").addEventListener('mousemove', function() {g_lightColor[0] = this.value/255.0; renderAllShapes();});
-	document.getElementById("light_g").addEventListener('mousemove', function() {g_lightColor[1] = this.value/255.0; renderAllShapes();});
-	document.getElementById("light_b").addEventListener('mousemove', function() {g_lightColor[2] = this.value/255.0; renderAllShapes();});
+
+	// normals on/off buttons
+	document.getElementById('normals_on').onclick = function(){g_normals_on = true; renderAllShapes();};
+	document.getElementById('normals_off').onclick = function(){g_normals_on = false; renderAllShapes();};
+
 }
 
 function initTextures(n) {
@@ -701,36 +703,13 @@ function renderAllShapes(){
 	gl.uniform1i(u_lighting_on, g_lighting_on);
 	// send point lighting boolean to glsl
 	gl.uniform1i(u_point_light, g_point_light);
-	
-	// draw the light
-	var light = new Cube();
-	light.moves = false;
-	light.color = [g_lightColor[0], g_lightColor[1], g_lightColor[2], 1];
-	light.matrix.translate(g_lightPos[0], g_lightPos[1], g_lightPos[2]);
-	light.matrix.scale(-.1,-.1,-.1);
-	light.matrix.translate(-.5,-.5,-.5);
-	light.renderfast();
-	
-	// Draw the ground
-	var floor = new Cube();
-	if (g_normals_on){floor.textureNum = -3;}
-	floor.color = [0.5, 0.0, 0.5, 1.0];
-	floor.matrix.translate(0, -.75, 0.0);
-	floor.matrix.scale(7, 0, 7);
-	floor.matrix.translate(-.5, 0, -.5);
-	floor.renderfast();
-	//floor.render();
-	
-	// Draw the sky
-	var sky = new Cube();
-	sky.moves = false;
-	if (g_normals_on){sky.textureNum = -3;}
-	sky.color = [1.0, 0.5, 0.0, 1.0];
-	sky.matrix.scale(-7, -7, -7);
-	sky.matrix.translate(-.5, -.5, -.5);
-	sky.renderfast();
-	//sky.render();
-	
+
+	var sphere1 = new Sphere();
+	sphere1.color = [0.0, 0.5, 0.8, 1.0];
+	sphere1.matrix.translate(1, 1, 1);
+	if (g_normals_on){sp.textureNum = -3;}
+	sphere1.render();
+
 	var c2 = new Cube();
 	if (g_normals_on){c2.textureNum = -3;}
 	c2.color = [0/255.0, 204/255.0, 0/255.0, 1.0];
@@ -739,11 +718,30 @@ function renderAllShapes(){
 	c2.matrix.translate(-0.5, 0, -0.5)
 	c2.renderfast();
 	
-	var sphere1 = new Sphere();
-	sphere1.color = [0.0, 0.5, 0.8, 1.0];
-	sphere1.matrix.translate(1, 1, 1);
-	if (g_normals_on){sp.textureNum = -3;}
-	sphere1.render();
+	var sky = new Cube();
+	sky.moves = false;
+	if (g_normals_on){sky.textureNum = -3;}
+	sky.color = [1.0, 0.5, 0.0, 1.0];
+	sky.matrix.scale(-7, -7, -7);
+	sky.matrix.translate(-.5, -.5, -.5);
+	sky.renderfast();
+
+	var light = new Cube();
+	light.moves = false;
+	light.color = [g_lightColor[0], g_lightColor[1], g_lightColor[2], 1];
+	light.matrix.translate(g_lightPos[0], g_lightPos[1], g_lightPos[2]);
+	light.matrix.scale(-.1,-.1,-.1);
+	light.matrix.translate(-.5,-.5,-.5);
+	light.renderfast();
 	
-	//drawPlatypus(-1.5, 2);
+	var ground = new Cube();
+	if (g_normals_on){ground.textureNum = -3;}
+	ground.color = [0.5, 0.0, 0.5, 1.0];
+	ground.matrix.translate(0, -.75, 0.0);
+	ground.matrix.scale(7, 0, 7);
+	ground.matrix.translate(-.5, 0, -.5);
+	ground.renderfast();
+	
+	
+
 }
