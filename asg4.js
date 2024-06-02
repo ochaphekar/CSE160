@@ -157,11 +157,11 @@ let u_lightColor;
 let u_cameraPos;
 let u_lighting_on;
 let u_point_light;
-let u_Sampler0;	// cobblestone floor
-let u_Sampler1;	// hedge maze walls
-let u_Sampler2;	// meadow floor
-let u_Sampler3;	// lava floor
-let u_Sampler4;	// trees skybox
+let u_Sampler0;
+let u_Sampler1;	
+let u_Sampler2;	
+let u_Sampler3;	
+let u_Sampler4;	
 
 function setUpWebGL(){
 	// Retrieve <canvas> element
@@ -395,7 +395,7 @@ function initTextures(n) {
 	// Register the event handler to be called on loading an image
 	image0.onload = function(){ sendTexture0toGLSL(n, image0); console.log('loaded texture 0');};
 	// Tell the browser to load an image
-	image0.src = 'resources/brick_pavement.jpg';
+	image0.src = 'imgs/sky.jpeg';
 	
 	var image1 = new Image();  // Create the image object
 	if (!image1) {
@@ -405,7 +405,7 @@ function initTextures(n) {
 	// Register the event handler to be called on loading an image
 	image1.onload = function(){ sendTexture1toGLSL(n, image1); console.log('loaded texture 1');};
 	// Tell the browser to load an image
-	image1.src = 'resources/hedge.jpg';
+	image1.src = 'imgs/ground1.jpeg';
 	
 	var image2 = new Image();  // Create the image object
 	if (!image2) {
@@ -415,7 +415,7 @@ function initTextures(n) {
 	// Register the event handler to be called on loading an image
 	image2.onload = function(){ sendTexture2toGLSL(n, image2); console.log('loaded texture 2');};
 	// Tell the browser to load an image
-	image2.src = 'resources/meadow.jpg';
+	image2.src = 'imgs/grass1.png';
 	
 	var image3 = new Image();  // Create the image object
 	if (!image3) {
@@ -560,19 +560,6 @@ function sendTexture4toGLSL(n, image) {
 	gl.uniform1i(u_Sampler4, 4);
 }
 
-// set up global color dictionary to determine colors for each platypus part
-let g_color_set = { "body" : [133/255.0, 80/255.0, 27/255.0, 1.0],
-	"head" : [163/255.0, 100/255.0, 36/255.0, 1.0], 
-	"eye" : [0.0, 0.0, 0.0, 1.0],
-	"nose" : [56/255.0, 47/255.0, 39/255.0, 1.0],
-	"bill" : [56/255.0, 47/255.0, 39/255.0, 1.0],
-	"tail" : [133/255.0, 80/255.0, 27/255.0, 1.0],
-	"leg" : [163/255.0, 100/255.0, 36/255.0, 1.0],
-	"flipper" : [56/255.0, 47/255.0, 39/255.0, 1.0], 
-	"hat" : [222/255.0, 121/255.0, 27/255.0, 1.0],
-	"hat band" : [105/255.0, 50/255.0, 30/255.0, 1.0]
-};
-
 function main() {
 	
 	// set up and connect variables to WebGL
@@ -619,17 +606,6 @@ function tick(){
 }
 
 function updateAnimationAngles(){
-	
-	// platypus animations
-	g_billAngle = 15/2.0 + (15/2.0)*Math.sin(g_seconds);
-	g_tailAngle = 5.0*Math.sin(g_seconds + .174);
-	g_tailAngleX = 15.0*Math.sin(g_seconds + .174);
-	g_frontLegAngle = 70 + 10*Math.sin(8*g_seconds);
-	g_frontFlipperAngle = 90*Math.sin(5*g_seconds);
-	g_hindLegAngle = 10*Math.sin(2*g_seconds);
-	g_hindFlipperAngle = 10*Math.sin(g_seconds);
-	g_bodyAngle = 10*Math.sin(g_seconds);
-	
 	if (g_animation){
 		// light animations
 		g_lightPos[0] = 2*Math.cos(.5*g_seconds);
@@ -645,20 +621,6 @@ g_platypus_collection = false;
 g_portal_reached = false;
 
 function keydown(ev){
-	if (ev.keyCode == 65){	// a
-		g_camera.moveLeft();
-		// if the camera collides with an occupied square, move back
-		if (collision() == 1){
-			g_camera.moveRight();
-		}
-	} 
-	if (ev.keyCode == 68){	// d
-		g_camera.moveRight();
-		// if the camera collides with an occupied square, move back
-		if (collision() == 1){
-			g_camera.moveLeft();
-		}
-	}
 	if (ev.keyCode == 87){	// w
 		g_camera.moveForward();
 		// if the camera collides with an occupied square, move back
@@ -671,6 +633,20 @@ function keydown(ev){
 		// if the camera collides with an occupied square, move back
 		if (collision() == 1){
 			g_camera.moveForward();
+		}
+	}
+	if (ev.keyCode == 65){	// a
+		g_camera.moveLeft();
+		// if the camera collides with an occupied square, move back
+		if (collision() == 1){
+			g_camera.moveRight();
+		}
+	} 
+	if (ev.keyCode == 68){	// d
+		g_camera.moveRight();
+		// if the camera collides with an occupied square, move back
+		if (collision() == 1){
+			g_camera.moveLeft();
 		}
 	}
 	if (ev.keyCode == 81){	// q
@@ -738,7 +714,7 @@ function renderAllShapes(){
 	// Draw the ground
 	var floor = new Cube();
 	if (g_normals_on){floor.textureNum = -3;}
-	floor.color = [1.0, 0.20, 0.5, 1.0];
+	floor.color = [0.5, 0.0, 0.5, 1.0];
 	floor.matrix.translate(0, -.75, 0.0);
 	floor.matrix.scale(7, 0, 7);
 	floor.matrix.translate(-.5, 0, -.5);
@@ -749,187 +725,25 @@ function renderAllShapes(){
 	var sky = new Cube();
 	sky.moves = false;
 	if (g_normals_on){sky.textureNum = -3;}
-	sky.color = [135/255.0, 206/255.0, 235/255.0, 1.0];
+	sky.color = [1.0, 0.5, 0.0, 1.0];
 	sky.matrix.scale(-7, -7, -7);
 	sky.matrix.translate(-.5, -.5, -.5);
 	sky.renderfast();
 	//sky.render();
 	
-	var cubie = new Cube();
-	if (g_normals_on){cubie.textureNum = -3;}
-	cubie.color = [210/255.0, 132/255.0, 232/255.0, 1.0];
-	cubie.matrix.translate(-3, 0, 1);
-	cubie.matrix.rotate(180*Math.sin(g_seconds), 0, 1, 0);
-	cubie.matrix.translate(-0.5, 0, -0.5)
-	cubie.renderfast();
-	//cubie.render();
+	var c2 = new Cube();
+	if (g_normals_on){c2.textureNum = -3;}
+	c2.color = [0/255.0, 204/255.0, 0/255.0, 1.0];
+	c2.matrix.translate(-1, 0, 1);
+	c2.matrix.rotate(180*Math.sin(g_seconds), 0, 1, 0);
+	c2.matrix.translate(-0.5, 0, -0.5)
+	c2.renderfast();
 	
-	var sp = new Sphere();
-	sp.color = [1.0, 1.0, 1.0, 1.0];
-	sp.matrix.translate(1, 1, 1);
+	var sphere1 = new Sphere();
+	sphere1.color = [0.0, 0.5, 0.8, 1.0];
+	sphere1.matrix.translate(1, 1, 1);
 	if (g_normals_on){sp.textureNum = -3;}
-	sp.render();
+	sphere1.render();
 	
-	drawPlatypus(-1.5, 2);
-}
-
-function drawPlatypus(map_x, map_y){
-	// Render the platypus!
-	var body = new Cube();
-	if (g_normals_on){body.textureNum = -3;}
-	body.color = g_color_set["body"];
-	body.matrix.translate(map_x, -.25, map_y);
-	body.matrix.rotate(g_bodyAngle, 1, 0, 0);
-	body.matrix.translate(0, 0, -.5*.1*2);
-	var bodyCoordMatrix = new Matrix4(body.matrix);
-	body.matrix.scale(.1*5, .1*2, .1*2);
-	body.renderfast();
-	
-	var head = new Cube();
-	if (g_normals_on){head.textureNum = -3;}
-	head.color = g_color_set["head"];
-	head.matrix = new Matrix4(bodyCoordMatrix);
-	head.matrix.translate(-.1*1.5, 0, .1*.25);
-	head.matrix.rotate(g_headAngle, 0, 0, 1);
-	var headCoordMatrix = new Matrix4(head.matrix);
-	head.matrix.scale(.1*2, .1*1.75, .1*1.5);
-	head.renderfast();
-	
-	var left_eye = new Cube();
-	if (g_normals_on){left_eye.textureNum = -3;}
-	left_eye.color = g_color_set["eye"];
-	left_eye.matrix = new Matrix4(headCoordMatrix);
-	left_eye.matrix.translate(.1*.3, .1*1.75 - 2*.1*.3 , - .1*.1);
-	left_eye.matrix.scale(.1*.3, .1*.3, .1*.1);
-	left_eye.renderfast();
-	
-	var right_eye = new Cube();
-	if (g_normals_on){right_eye.textureNum = -3;}
-	right_eye.color = g_color_set["eye"];
-	right_eye.matrix = new Matrix4(headCoordMatrix);
-	right_eye.matrix.translate(.1*.3, .1*1.75 - 2*.1*.3 , .1*1.5);
-	right_eye.matrix.scale(.1*.3, .1*.3, .1*.1);
-	right_eye.renderfast();
-	
-	var nose = new Cube();
-	if (g_normals_on){nose.textureNum = -3;}
-	nose.color = g_color_set["nose"];
-	nose.matrix = new Matrix4(headCoordMatrix);
-	nose.matrix.translate(-.1*.3, .1*.25, 0);
-	var noseCoordMatrix = new Matrix4(nose.matrix);
-	nose.matrix.scale(.1*.3, .1*1.25, .1*1.5);
-	nose.renderfast();
-	
-	var top_bill = new Cube();	
-	if (g_normals_on){top_bill.textureNum = -3;}
-	top_bill.color = g_color_set["bill"];
-	top_bill.matrix = new Matrix4(noseCoordMatrix);
-	top_bill.matrix.translate(-.1*2, .1*.25 + .1*.75*.5, 0);
-	top_bill.matrix.scale(.1*2, .1*.75*.5, .1*1.5);
-	top_bill.renderfast();
-
-	var lower_bill = new Cube();
-	if (g_normals_on){lower_bill.textureNum = -3;}	
-	lower_bill.color = g_color_set["bill"];
-	lower_bill.matrix = new Matrix4(noseCoordMatrix);
-	lower_bill.matrix.translate(.1*.1, .1*.25 , .1*1.5);
-	lower_bill.matrix.rotate(g_billAngle, 0, 0, 1);
-	lower_bill.matrix.rotate(180, 0, 1, 0);
-	lower_bill.matrix.scale(.1*2.1, .1*.75*.5, .1*1.5);
-	lower_bill.renderfast();
-	
-	var tail = new Cube();
-	if (g_normals_on){tail.textureNum = -3;}
-	tail.color = g_color_set["tail"];
-	tail.matrix = new Matrix4(bodyCoordMatrix);
-	tail.matrix.translate(.1*3*1.5, .1*.5 + .5*.1*1, 2*.1*.25 + .5*.1*1);
-	tail.matrix.rotate(g_tailAngleX, 1, 0, 0);
-	tail.matrix.translate(0, -.5*.1*1, -.5*.1*1);
-	tail.matrix.rotate(g_tailAngle, 0, 0, 1);
-	tail.matrix.scale(.1*3, .1*1, .1*1);
-	tail.renderfast();
-	
-	var front_left_leg = new Cube();
-	if (g_normals_on){front_left_leg.textureNum = -3;}
-	front_left_leg.color = g_color_set["leg"];
-	front_left_leg.matrix = new Matrix4(bodyCoordMatrix);
-	front_left_leg.matrix.translate(.1*.5 + .5*.1*1, 0, -.1*.75);
-	front_left_leg.matrix.rotate(g_frontLegAngle, 0, 0, 1);
-	front_left_leg.matrix.translate(-.5*.1*1, 0, 0);	// have it so that the leg rotates about its center
-	var frontLeftLegCoordMatrix = new Matrix4(front_left_leg.matrix);
-	front_left_leg.matrix.scale(.1*1, .1*.2, .1*.75);
-	front_left_leg.renderfast();
-	
-	var front_left_flipper = new Cube();
-	if (g_normals_on){front_left_flipper.textureNum = -3;}
-	front_left_flipper.color = g_color_set["flipper"];
-	front_left_flipper.matrix = new Matrix4(frontLeftLegCoordMatrix);
-	front_left_flipper.matrix.translate(0, .1*.2, 0);
-	front_left_flipper.matrix.rotate(180 - g_frontFlipperAngle, 1, 0, 0);
-	front_left_flipper.matrix.translate(-.1*.25, 0, 0);
-	front_left_flipper.matrix.scale(.1*1.5, .1*.2, 2*.1*.75);
-	front_left_flipper.renderfast();
-	
-	var front_right_leg = new Cube();
-	if (g_normals_on){front_right_leg.textureNum = -3;}
-	front_right_leg.color = g_color_set["leg"];
-	front_right_leg.matrix = new Matrix4(bodyCoordMatrix);
-	front_right_leg.matrix.translate(.1*.5 + .5*.1*1, 0, .1*2);
-	front_right_leg.matrix.rotate(g_frontLegAngle, 0, 0, 1);
-	front_right_leg.matrix.translate(-.5*.1*1, 0, 0);	// have it so that the leg rotates about its center
-	var frontRightLegCoordMatrix = new Matrix4(front_right_leg.matrix);
-	front_right_leg.matrix.scale(.1*1, .1*.2, .1*.75);
-	front_right_leg.renderfast();
-	
-	var front_right_flipper = new Cube();
-	if (g_normals_on){front_right_flipper.textureNum = -3;}
-	front_right_flipper.color = g_color_set["flipper"];
-	front_right_flipper.matrix = new Matrix4(frontRightLegCoordMatrix);
-	front_right_flipper.matrix.translate(-.1*.25 + .5*.1*1.5, 0, .1*.75);
-	front_right_flipper.matrix.rotate(g_frontFlipperAngle, 1, 0, 0);
-	front_right_flipper.matrix.translate(-.5*.1*1.5, 0, 0);
-	front_right_flipper.matrix.scale(.1*1.5, .1*.2, 2*.1*.75);
-	front_right_flipper.renderfast();
-	
-	var hind_left_leg = new Cube();
-	if (g_normals_on){hind_left_leg.textureNum = -3;}
-	hind_left_leg.color = g_color_set["leg"];
-	hind_left_leg.matrix = new Matrix4(bodyCoordMatrix);
-	hind_left_leg.matrix.translate(.1*5 - 2*.1*.5 + .5*.1*1, 0, -.1*.75);
-	hind_left_leg.matrix.rotate(g_hindLegAngle, 0, 0, 1);
-	hind_left_leg.matrix.translate(-.5*.1*1, 0, 0);	// have it so that the leg rotates about its center
-	var hindLeftLegCoordMatrix = new Matrix4(hind_left_leg.matrix);
-	hind_left_leg.matrix.scale(.1*1, .1*.2, .1*.75);
-	hind_left_leg.renderfast();
-	
-	var hind_left_flipper = new Cube();
-	if (g_normals_on){hind_left_flipper.textureNum = -3;}
-	hind_left_flipper.color = g_color_set["flipper"];
-	hind_left_flipper.matrix = new Matrix4(hindLeftLegCoordMatrix);
-	hind_left_flipper.matrix.translate(0, .1*.2, 0);
-	hind_left_flipper.matrix.rotate(180 - g_hindFlipperAngle, 1, 0, 0);
-	hind_left_flipper.matrix.translate(-.1*.25, 0, 0);
-	hind_left_flipper.matrix.scale(.1*1.5, .1*.2, 2*.1*.75);
-	hind_left_flipper.renderfast();
-	
-	var hind_right_leg = new Cube();
-	if (g_normals_on){hind_right_leg.textureNum = -3;}
-	hind_right_leg.color = g_color_set["leg"];
-	hind_right_leg.matrix = new Matrix4(bodyCoordMatrix);
-	hind_right_leg.matrix.translate(.1*5 - 2*.1*.5 + .5*.1*1, 0, .1*2 );
-	hind_right_leg.matrix.rotate(g_hindLegAngle, 0, 0, 1);
-	hind_right_leg.matrix.translate(-.5*.1*1, 0, 0);	// have it so that the leg rotates about its center
-	var hindRightLegCoordMatrix = new Matrix4(hind_right_leg.matrix);
-	hind_right_leg.matrix.scale(.1*1, .1*.2, .1*.75);
-	hind_right_leg.renderfast();
-	
-	var hind_right_flipper = new Cube();
-	if (g_normals_on){hind_right_flipper.textureNum = -3;}
-	hind_right_flipper.color = g_color_set["flipper"];
-	hind_right_flipper.matrix = new Matrix4(hindRightLegCoordMatrix);
-	hind_right_flipper.matrix.translate(-.1*.25 + .5*.1*1.5, 0, .1*.75);
-	hind_right_flipper.matrix.rotate(g_hindFlipperAngle, 1, 0, 0);
-	hind_right_flipper.matrix.translate(-.5*.1*1.5, 0, 0);
-	hind_right_flipper.matrix.scale(.1*1.5, .1*.2, 2*.1*.75);
-	hind_right_flipper.renderfast();
+	//drawPlatypus(-1.5, 2);
 }
